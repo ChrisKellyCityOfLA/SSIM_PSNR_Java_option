@@ -13,10 +13,12 @@ This is used to provide the SSIM (image comparision) functionality. Imagick vers
 ~~~
 
 4. Issue these commands in the ssim directory:
+~~~
    chmod +x make.sh
    chmod +x ssim.sh
    ./make.sh
    cp target/JavaOpenCV-1.0-SNAPSHOT.jar .
+~~~
 
 5. In ImageComparatorImagickShell, change the usingSSIMAlternative() method to return TRUE.
    
