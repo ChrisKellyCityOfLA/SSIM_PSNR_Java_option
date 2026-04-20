@@ -18,6 +18,45 @@
     <build>
         <plugins>
             <plugin>
+              <!-- this bit from https://gist.github.com/jeongho/bb91d48091edea260622 -->
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-shade-plugin</artifactId>
+              <executions>
+                <execution>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>shade</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+
+                <transformers>
+                  <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                </transformers>
+                <createDependencyReducedPom>false</createDependencyReducedPom>
+                <relocations>
+                  <relocation>
+                    <!-- MR in CDH5.1 puts Guava 11 on the classpath, which breaks DQDataTypes -->
+                    <pattern>com.google.common</pattern>
+                    <shadedPattern>org.shaded.google.common</shadedPattern>
+                  </relocation>
+                </relocations>
+              </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.oceanai.main.SSIMTest</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -25,6 +64,33 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <version>1.6.0</version>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>java</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <mainClass>com.oceanai.main.SSIMTest</mainClass>
+      <!--
+                <arguments>
+                  <argument>arg0</argument>
+                  <argument>arg1</argument>
+                </arguments>
+      -->
+                <systemProperties>
+                  <systemProperty>
+                    <key>io.netty.tryReflectionSetAccessible</key>
+                    <value>false</value>
+                  </systemProperty>
+                </systemProperties>
+              </configuration>
+          </plugin>
         </plugins>
     </build>
 </project>
